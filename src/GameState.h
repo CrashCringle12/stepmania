@@ -12,6 +12,7 @@
 #include "SongOptions.h"
 #include "SongPosition.h"
 #include "Preference.h"
+#include "discord-rpc.h"
 
 #include <map>
 #include <deque>
@@ -408,6 +409,11 @@ public:
 	bool IsGoalComplete( PlayerNumber pn )	{ return GetGoalPercentComplete( pn ) >= 1; }
 
 	bool m_bDopefish;
+
+	// Discord Rich Presence
+	void discordInit();
+	void updateDiscordPresence( const RString &largeImageText, const RString &details, const RString &state, const int64_t endTime );
+	void updateDiscordPresenceMenu( const RString &largeImageText );
 
 	// Autogen stuff.  This should probably be moved to its own singleton or
 	// something when autogen is generalized and more customizable. -Kyz

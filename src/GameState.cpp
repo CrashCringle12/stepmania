@@ -2667,15 +2667,39 @@ void GameState::discordInit()
 		Discord_Initialize("801552531850264577", &handlers, 1, NULL);
 }
 
-void GameState::updateDiscordPresence(const RString &largeImageText, const RString &details, const RString &state, const int64_t endTime)
+void GameState::updateDiscordPresenceInfo(const RString &details, const RString &state, const int64_t endTime)
 {
 		DiscordRichPresence discordPresence;
 		memset(&discordPresence, 0, sizeof(discordPresence));
 		discordPresence.details = details;
 		discordPresence.state = state;
 		discordPresence.endTimestamp = endTime;
-		discordPresence.largeImageKey = "default";
-		discordPresence.largeImageText = largeImageText;
+		Discord_RunCallbacks();
+		Discord_UpdatePresence(&discordPresence);
+}
+
+void GameState::updateDiscordPresenceImage(const int64_t &imageChoice, const RString &imageText, const RString imageKey)
+{
+		DiscordRichPresence discordPresence;
+		memset(&discordPresence, 0, sizeof(discordPresence));
+		if (imageChoice > 0) {
+			discordPresence.smallImageKey = imageKey;
+			discordPresence.smallImageText = imageText;
+		}
+		else {
+			discordPresence.largeImageKey = imageKey;
+			discordPresence.largeImageText = imageText;
+		}
+		Discord_RunCallbacks();
+		Discord_UpdatePresence(&discordPresence);
+}
+
+void GameState::updateDiscordPresenceTime(const int64_t startTime, const int64_t endTime)
+{
+		DiscordRichPresence discordPresence;
+		memset(&discordPresence, 0, sizeof(discordPresence));
+		discordPresence.startTimestamp = startTime;
+		discordPresence.endTimestamp = endTime;
 		Discord_RunCallbacks();
 		Discord_UpdatePresence(&discordPresence);
 }
@@ -3335,8 +3359,18 @@ public:
 		return 1;
 	}
 
-	static int UpdateDiscordPresence(T* p, lua_State* L) {
-		p->updateDiscordPresence(SArg(1), SArg(2), SArg(3), IArg(4));
+	static int UpdateDiscordPresenceInfo(T* p, lua_State* L) {
+		p->updateDiscordPresenceInfo(SArg(1), SArg(2), IArg(3));
+		return 1;
+	}
+
+	static int UpdateDiscordPresenceImage(T* p, lua_State* L) {
+		p->updateDiscordPresenceImage(IArg(1), SArg(2), SArg(3));
+		return 1;
+	}
+
+	static int UpdateDiscordPresenceTime(T* p, lua_State* L) {
+		p->updateDiscordPresenceTime(IArg(1), IArg(2));
 		return 1;
 	}
 
@@ -3468,7 +3502,9 @@ public:
 		ADD_METHOD( SetAutoGenFarg );
 		ADD_METHOD(prepare_song_for_gameplay);
 		ADD_METHOD( UpdateDiscordMenu );
-		ADD_METHOD( UpdateDiscordPresence );
+		ADD_METHOD( UpdateDiscordPresenceInfo );
+		ADD_METHOD( UpdateDiscordPresenceImage );
+		ADD_METHOD( UpdateDiscordPresenceTime );
 	}
 };
 

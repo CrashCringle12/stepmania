@@ -412,9 +412,10 @@ public:
 
 	// Discord Rich Presence
 	void discordInit();
-	void updateDiscordPresence( const RString &largeImageText, const RString &details, const RString &state, const int64_t endTime );
 	void updateDiscordPresenceMenu( const RString &largeImageText );
-
+	void updateDiscordPresenceInfo( const RString &details, const RString &state, const int64_t endTime );
+	void updateDiscordPresenceImage( const int64_t &imageChoice, const RString &imageText, const RString imageKey );
+	void updateDiscordPresenceTime( const int64_t startTime, const int64_t endTime );
 	// Autogen stuff.  This should probably be moved to its own singleton or
 	// something when autogen is generalized and more customizable. -Kyz
 	float GetAutoGenFarg(size_t i)
